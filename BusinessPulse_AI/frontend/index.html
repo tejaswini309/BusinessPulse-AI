@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BusinessPulse AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app {
+            width: 95%;
+            max-width: 1100px;
+            height: 90vh;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+            display: flex;
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            width: 260px;
+            background: #111827;
+            color: white;
+            padding: 25px 20px;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 35px;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            color: #6b7280;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .menu-item {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .menu-item:hover {
+            background: #1f2937;
+        }
+
+        .menu-item.active {
+            background: #2563eb;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .header {
+            height: 75px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .status {
+            font-size: 13px;
+            color: #16a34a;
+        }
+
+        .status.offline {
+            color: #dc2626;
+        }
+
+
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+
+        /* =====================================================
+           CHAT MESSAGES
+        ===================================================== */
+
+        .message {
+            margin-bottom: 18px;
+            display: flex;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .bubble {
+            max-width: 75%;
+            padding: 13px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .assistant .bubble {
+            background: #f1f5f9;
+            color: #1f2937;
+        }
+
+        .user .bubble {
+            background: #2563eb;
+            color: white;
+        }
+
+
+        /* =====================================================
+           INSIGHT CARDS
+        ===================================================== */
+
+        .insight-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .insight-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .insight-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+
+        .insight-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #374151;
+            white-space: pre-wrap;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .metric {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .metric-name {
+            font-size: 11px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #111827;
+            word-break: break-word;
+        }
+
+
+        /* =====================================================
+           TYPING
+        ===================================================== */
+
+        .typing {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            width: fit-content;
+        }
+
+
+        /* =====================================================
+           INPUT
+        ===================================================== */
+
+        .input-area {
+            border-top: 1px solid #e5e7eb;
+            padding: 18px;
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            flex: 1;
+            resize: none;
+            height: 50px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 14px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        textarea:focus {
+            border-color: #2563eb;
+        }
+
+        button {
+            width: 90px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .app {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .bubble {
+                max-width: 90%;
+            }
+
+            .header {
+                padding: 0 15px;
+            }
+
+            .messages {
+                padding: 15px;
+            }
+
+            .input-area {
+                padding: 12px;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            BusinessPulse AI
+        </div>
+
+        <div class="subtitle">
+            Enterprise Decision Intelligence
+        </div>
+
+        <div class="menu-title">
+            AI Assistant
+        </div>
+
+
+        <div
+            class="menu-item active"
+            id="chatMenu"
+            onclick="showChat()"
+        >
+            Business Chat
+        </div>
+
+
+        <div
+            class="menu-item"
+            id="insightsMenu"
+            onclick="loadBusinessInsights()"
+        >
+            Business Insights
+        </div>
+
+
+        <div
+            class="menu-item"
+            id="riskMenu"
+            onclick="loadRiskAnalysis()"
+        >
+            Risk Analysis
+        </div>
+
+
+        <div
+            class="menu-item"
+            id="forecastMenu"
+            onclick="showForecasting()"
+        >
+            Forecasting
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <div class="main">
+
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <div
+                class="header-title"
+                id="pageTitle"
+            >
+                AI Business Assistant
+            </div>
+
+            <div
+                class="status"
+                id="status"
+            >
+                ● AI Online
+            </div>
+
+        </div>
+
+
+
+        <!-- CONTENT -->
+
+        <div class="chat-container">
+
+
+            <!-- =================================================
+                 MESSAGES / CONTENT
+            ================================================== -->
+
+            <div
+                class="messages"
+                id="messages"
+            >
+
+                <div class="message assistant">
+
+                    <div class="bubble">
+
+                        Hello! I'm BusinessPulse AI.
+
+                        I can help you understand business performance, revenue, operational issues, risks and recommendations.
+
+                        Ask me a business question to get started.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CHAT INPUT
+            ================================================== -->
+
+            <div
+                class="input-area"
+                id="inputArea"
+            >
+
+                <textarea
+                    id="question"
+                    placeholder="Ask BusinessPulse AI something..."
+                    onkeydown="handleKey(event)"
+                ></textarea>
+
+
+                <button
+                    id="sendButton"
+                    onclick="sendMessage()"
+                >
+                    Send
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+    /* =========================================================
+       API URLS
+    ========================================================= */
+
+    const API_BASE = "http://127.0.0.1:8000";
+
+    const CHAT_API =
+        API_BASE + "/chat";
+
+    const BUSINESS_API =
+        API_BASE + "/business-summary";
+
+    const RISK_API =
+        API_BASE + "/risk-summary";
+
+    const INSIGHTS_API =
+        API_BASE + "/ai-insights";
+
+
+
+    /* =========================================================
+       ELEMENTS
+    ========================================================= */
+
+    const messages =
+        document.getElementById("messages");
+
+    const status =
+        document.getElementById("status");
+
+    const pageTitle =
+        document.getElementById("pageTitle");
+
+    const inputArea =
+        document.getElementById("inputArea");
+
+
+
+    /* =========================================================
+       ADD MESSAGE
+    ========================================================= */
+
+    function addMessage(text, type) {
+
+        const message =
+            document.createElement("div");
+
+        message.className =
+            "message " + type;
+
+
+        const bubble =
+            document.createElement("div");
+
+        bubble.className =
+            "bubble";
+
+        bubble.textContent =
+            text;
+
+
+        message.appendChild(bubble);
+
+        messages.appendChild(message);
+
+        messages.scrollTop =
+            messages.scrollHeight;
+    }
+
+
+
+    /* =========================================================
+       TYPING INDICATOR
+    ========================================================= */
+
+    function showTyping() {
+
+        const existing =
+            document.getElementById("typing");
+
+        if (existing) {
+            return;
+        }
+
+
+        const typing =
+            document.createElement("div");
+
+        typing.id =
+            "typing";
+
+        typing.className =
+            "typing";
+
+        typing.textContent =
+            "BusinessPulse AI is analyzing your business data...";
+
+
+        messages.appendChild(typing);
+
+        messages.scrollTop =
+            messages.scrollHeight;
+    }
+
+
+
+    /* =========================================================
+       REMOVE TYPING
+    ========================================================= */
+
+    function removeTyping() {
+
+        const typing =
+            document.getElementById("typing");
+
+        if (typing) {
+            typing.remove();
+        }
+    }
+
+
+
+    /* =========================================================
+       SIDEBAR ACTIVE STATE
+    ========================================================= */
+
+    function setActiveMenu(menuId) {
+
+        const menuItems =
+            document.querySelectorAll(".menu-item");
+
+        menuItems.forEach(
+            function(item) {
+                item.classList.remove("active");
+            }
+        );
+
+
+        const selected =
+            document.getElementById(menuId);
+
+        if (selected) {
+            selected.classList.add("active");
+        }
+    }
+
+
+
+    /* =========================================================
+       BUSINESS CHAT
+    ========================================================= */
+
+    function showChat() {
+
+        setActiveMenu("chatMenu");
+
+        pageTitle.textContent =
+            "AI Business Assistant";
+
+
+        inputArea.style.display =
+            "flex";
+
+
+        messages.innerHTML = `
+
+            <div class="message assistant">
+
+                <div class="bubble">
+
+                    Hello! I'm BusinessPulse AI.
+
+                    I can help you understand business performance, revenue, operational issues, risks and recommendations.
+
+                    Ask me a business question to get started.
+
+                </div>
+
+            </div>
+
+        `;
+
+        document
+            .getElementById("question")
+            .focus();
+    }
+
+
+
+    /* =========================================================
+       SEND CHAT MESSAGE
+    ========================================================= */
+
+    async function sendMessage() {
+
+        const input =
+            document.getElementById("question");
+
+        const button =
+            document.getElementById("sendButton");
+
+        const question =
+            input.value.trim();
+
+
+        if (!question) {
+            return;
+        }
+
+
+        addMessage(
+            question,
+            "user"
+        );
+
+
+        input.value = "";
+
+        button.disabled = true;
+
+        button.textContent =
+            "Thinking...";
+
+
+        showTyping();
+
+
+        try {
+
+            const response =
+                await fetch(
+                    CHAT_API,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            question:
+                                question
+                        })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            removeTyping();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    "BusinessPulse AI API request failed."
+                );
+
+            }
+
+
+            status.textContent =
+                "● AI Online";
+
+            status.classList.remove(
+                "offline"
+            );
+
+
+            const answer =
+                data.answer ||
+                data.response ||
+                data.message ||
+                "No answer received.";
+
+
+            addMessage(
+                answer,
+                "assistant"
+            );
+
+
+        }
+
+        catch (error) {
+
+            removeTyping();
+
+
+            status.textContent =
+                "● AI Error";
+
+            status.classList.add(
+                "offline"
+            );
+
+
+            addMessage(
+
+                "Unable to get a response from BusinessPulse AI.\n\n" +
+                "Error: " +
+                error.message,
+
+                "assistant"
+
+            );
+
+
+            console.error(
+                "BusinessPulse AI Error:",
+                error
+            );
+
+        }
+
+
+        finally {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "Send";
+
+            input.focus();
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       ENTER KEY
+    ========================================================= */
+
+    function handleKey(event) {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+
+            event.preventDefault();
+
+            sendMessage();
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       BUSINESS INSIGHTS
+    ========================================================= */
+
+    async function loadBusinessInsights() {
+
+        setActiveMenu(
+            "insightsMenu"
+        );
+
+
+        pageTitle.textContent =
+            "Business Insights";
+
+
+        inputArea.style.display =
+            "none";
+
+
+        messages.innerHTML = "";
+
+
+        addMessage(
+            "BusinessPulse AI is generating executive business insights...",
+            "assistant"
+        );
+
+
+        try {
+
+            /*
+             * Call the three EXISTING backend APIs.
+             */
+
+            const [
+                businessResponse,
+                riskResponse,
+                aiResponse
+            ] = await Promise.all([
+
+                fetch(BUSINESS_API),
+
+                fetch(RISK_API),
+
+                fetch(INSIGHTS_API)
+
+            ]);
+
+
+            const businessData =
+                await businessResponse.json();
+
+            const riskData =
+                await riskResponse.json();
+
+            const aiData =
+                await aiResponse.json();
+
+
+            if (!businessResponse.ok) {
+
+                throw new Error(
+                    businessData.detail ||
+                    "Business summary API failed."
+                );
+
+            }
+
+
+            if (!riskResponse.ok) {
+
+                throw new Error(
+                    riskData.detail ||
+                    "Risk summary API failed."
+                );
+
+            }
+
+
+            if (!aiResponse.ok) {
+
+                throw new Error(
+                    aiData.detail ||
+                    "AI insights API failed."
+                );
+
+            }
+
+
+            /*
+             * Clear loading message.
+             */
+
+            messages.innerHTML = "";
+
+
+            /*
+             * BUSINESS PERFORMANCE
+             */
+
+            createBusinessCard(
+                "BUSINESS PERFORMANCE",
+                businessData.data
+            );
+
+
+            /*
+             * RISK OVERVIEW
+             */
+
+            createBusinessCard(
+                "RISK OVERVIEW",
+                riskData.data
+            );
+
+
+            /*
+             * AI EXECUTIVE INSIGHTS
+             */
+
+            createBusinessCard(
+                "AI EXECUTIVE INSIGHTS",
+                aiData.data
+            );
+
+
+            status.textContent =
+                "● AI Online";
+
+            status.classList.remove(
+                "offline"
+            );
+
+        }
+
+        catch (error) {
+
+            messages.innerHTML = "";
+
+
+            addMessage(
+
+                "Unable to load Business Insights.\n\n" +
+                "Error: " +
+                error.message,
+
+                "assistant"
+
+            );
+
+
+            status.textContent =
+                "● AI Error";
+
+            status.classList.add(
+                "offline"
+            );
+
+
+            console.error(
+                "Business Insights Error:",
+                error
+            );
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       CREATE BUSINESS CARD
+    ========================================================= */
+
+    function createBusinessCard(
+        title,
+        data
+    ) {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "insight-card";
+
+
+        const titleElement =
+            document.createElement("div");
+
+        titleElement.className =
+            "insight-title";
+
+        titleElement.textContent =
+            title;
+
+
+        card.appendChild(
+            titleElement
+        );
+
+
+        /*
+         * AI insight object
+         */
+
+        if (
+            title ===
+            "AI EXECUTIVE INSIGHTS"
+        ) {
+
+            const content =
+                document.createElement("div");
+
+            content.className =
+                "insight-content";
+
+
+            if (
+                data &&
+                typeof data === "object"
+            ) {
+
+                Object.entries(data)
+                    .forEach(
+                        function([key, value]) {
+
+                            const section =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            section.style.marginBottom =
+                                "14px";
+
+
+                            const heading =
+                                document.createElement(
+                                    "strong"
+                                );
+
+                            heading.textContent =
+                                formatKey(key);
+
+
+                            const text =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            text.textContent =
+                                formatValue(value);
+
+
+                            section.appendChild(
+                                heading
+                            );
+
+                            section.appendChild(
+                                text
+                            );
+
+
+                            content.appendChild(
+                                section
+                            );
+
+                        }
+                    );
+
+            }
+
+            else {
+
+                content.textContent =
+                    String(data);
+
+            }
+
+
+            card.appendChild(
+                content
+            );
+
+        }
+
+
+        /*
+         * Business / risk metrics
+         */
+
+        else {
+
+            const grid =
+                document.createElement(
+                    "div"
+                );
+
+            grid.className =
+                "metric-grid";
+
+
+            if (
+                data &&
+                typeof data === "object"
+            ) {
+
+                Object.entries(data)
+                    .forEach(
+                        function([key, value]) {
+
+                            const metric =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            metric.className =
+                                "metric";
+
+
+                            const name =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            name.className =
+                                "metric-name";
+
+                            name.textContent =
+                                formatKey(key);
+
+
+                            const valueElement =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            valueElement.className =
+                                "metric-value";
+
+                            valueElement.textContent =
+                                formatValue(value);
+
+
+                            metric.appendChild(
+                                name
+                            );
+
+                            metric.appendChild(
+                                valueElement
+                            );
+
+
+                            grid.appendChild(
+                                metric
+                            );
+
+                        }
+                    );
+
+            }
+
+            else {
+
+                grid.textContent =
+                    String(data);
+
+            }
+
+
+            card.appendChild(
+                grid
+            );
+
+        }
+
+
+        messages.appendChild(
+            card
+        );
+
+
+        messages.scrollTop =
+            messages.scrollHeight;
+    }
+
+
+
+    /* =========================================================
+       FORMAT KEY
+    ========================================================= */
+
+    function formatKey(key) {
+
+        return String(key)
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, function(letter) {
+                return letter.toUpperCase();
+            });
+
+    }
+
+
+
+    /* =========================================================
+       FORMAT VALUE
+    ========================================================= */
+
+    function formatValue(value) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "N/A";
+
+        }
+
+
+        if (
+            typeof value === "object"
+        ) {
+
+            return JSON.stringify(
+                value,
+                null,
+                2
+            );
+
+        }
+
+
+        return String(value);
+
+    }
+
+
+
+    /* =========================================================
+       RISK ANALYSIS
+    ========================================================= */
+
+    async function loadRiskAnalysis() {
+
+        setActiveMenu(
+            "riskMenu"
+        );
+
+
+        pageTitle.textContent =
+            "Risk Analysis";
+
+
+        inputArea.style.display =
+            "none";
+
+
+        messages.innerHTML = "";
+
+
+        addMessage(
+            "BusinessPulse AI is analyzing current business risks...",
+            "assistant"
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    RISK_API
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    "Risk API request failed."
+                );
+
+            }
+
+
+            messages.innerHTML = "";
+
+
+            createBusinessCard(
+                "CURRENT BUSINESS RISKS",
+                data.data
+            );
+
+
+            status.textContent =
+                "● AI Online";
+
+            status.classList.remove(
+                "offline"
+            );
+
+        }
+
+        catch (error) {
+
+            messages.innerHTML = "";
+
+
+            addMessage(
+
+                "Unable to load Risk Analysis.\n\n" +
+                "Error: " +
+                error.message,
+
+                "assistant"
+
+            );
+
+
+            status.textContent =
+                "● AI Error";
+
+            status.classList.add(
+                "offline"
+            );
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       FORECASTING PLACEHOLDER
+    ========================================================= */
+
+   async function showForecasting() {
+
+    setActiveMenu("forecastMenu");
+
+    pageTitle.textContent = "Forecasting";
+
+    inputArea.style.display = "none";
+
+    messages.innerHTML = "";
+
+    addMessage(
+        "BusinessPulse AI is generating the latest revenue and order forecasts...",
+        "assistant"
+    );
+
+    try {
+
+        const response = await fetch(
+            API_BASE + "/forecast"
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Forecast API request failed."
+            );
+
+        }
+
+        messages.innerHTML = "";
+
+        const forecast = data.data;
+
+
+        // ====================================================
+        // REVENUE FORECAST
+        // ====================================================
+
+        createBusinessCard(
+            "REVENUE FORECAST",
+            forecast.revenue_forecast
+        );
+
+
+        // ====================================================
+        // ORDER FORECAST
+        // ====================================================
+
+        createBusinessCard(
+            "ORDER FORECAST",
+            forecast.order_forecast
+        );
+
+
+        // ====================================================
+        // FORECAST SUMMARY
+        // ====================================================
+
+        createBusinessCard(
+            "FORECAST SUMMARY",
+            {
+                forecast_horizon_months:
+                    forecast.forecast_horizon_months,
+
+                revenue_trend:
+                    forecast.revenue_forecast.trend,
+
+                last_actual_revenue:
+                    forecast.revenue_forecast.last_actual_revenue,
+
+                order_trend:
+                    forecast.order_forecast.trend,
+
+                last_actual_orders:
+                    forecast.order_forecast.last_actual_orders
+            }
+        );
+
+
+        status.textContent = "● AI Online";
+
+        status.classList.remove("offline");
+
+    }
+
+    catch (error) {
+
+        messages.innerHTML = "";
+
+        addMessage(
+            "Unable to load Forecasting.\n\n" +
+            "Error: " +
+            error.message,
+            "assistant"
+        );
+
+        status.textContent = "● API Error";
+
+        status.classList.add("offline");
+
+        console.error(
+            "Forecasting Error:",
+            error
+        );
+    }
+}
+
+    /* =========================================================
+       API STATUS CHECK
+    ========================================================= */
+
+    async function checkAPIStatus() {
+
+        try {
+
+            const response =
+                await fetch(
+                    API_BASE + "/"
+                );
+
+
+            if (response.ok) {
+
+                status.textContent =
+                    "● AI Online";
+
+                status.classList.remove(
+                    "offline"
+                );
+
+            }
+
+            else {
+
+                status.textContent =
+                    "● API Error";
+
+                status.classList.add(
+                    "offline"
+                );
+
+            }
+
+        }
+
+        catch (error) {
+
+            status.textContent =
+                "● API Offline";
+
+            status.classList.add(
+                "offline"
+            );
+
+
+            console.warn(
+                "BusinessPulse API is not reachable:",
+                error
+            );
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       STARTUP
+    ========================================================= */
+
+    window.addEventListener(
+        "load",
+        function() {
+
+            checkAPIStatus();
+
+
+            document
+                .getElementById("question")
+                .focus();
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>
